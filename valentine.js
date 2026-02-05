@@ -28,7 +28,7 @@ document.addEventListener('mousemove', (e) => {
         const padding = 10;
         const btnWidth = noBtnRect.width;
         const btnHeight = noBtnRect.height;
-        
+
         const centerX = Math.max(padding + btnWidth / 2, Math.min(window.innerWidth - padding - btnWidth / 2, newX));
         const centerY = Math.max(padding + btnHeight / 2, Math.min(window.innerHeight - padding - btnHeight / 2, newY));
 
@@ -130,7 +130,7 @@ function showDayByIndex(index) {
             ${roseImageHtml}
             ${mainContent}
             <p style="font-size: 2.5rem; margin-top: 24px;">${day.decoration}</p>
-            <p style="margin-top: 24px; color: #ff1493; font-weight: 600; font-size: 1.1rem;">Thank you for being part of my love story! 💕</p>
+            <p style="margin-top: 24px; color: #ff1493; font-weight: 600; font-size: 1.1rem;">Happy Rose day my baby girl! 💕</p>
             ${isRose ? '<p class="rose-hint">Check your bag… the fragrance isn\'t just on this page</p>' : ''}
         </div>
     `;
@@ -186,11 +186,15 @@ function handleYes() {
         }, i * 70 + Math.random() * 50);
     }
     
-    // Show days selection after 2.5 seconds
-    setTimeout(() => {
-        successMessage.style.display = 'none';
-        document.getElementById('daysContainer').style.display = 'block';
-    }, 2500);
+    // Do NOT automatically open the days modal here.
+    // The days/modal should only appear when the user clicks the "Start Tour" button.
+}
+
+// Start the tour: show the days selection modal (called by Start Tour button)
+function startTour() {
+    overlay.style.display = 'block';
+    successMessage.style.display = 'none';
+    document.getElementById('daysContainer').style.display = 'block';
 }
 
 // Create heart animation with varied duration and horizontal drift

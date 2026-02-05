@@ -134,10 +134,11 @@ body {
     background: white;
     color: #ff1493;
     cursor: not-allowed;
-    transition: all 0.1s ease;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: fixed;
     box-shadow: 0 10px 30px rgba(255, 20, 147, 0.2);
     z-index: 100;
+    pointer-events: none;
 }
 
 .no-btn:hover {
