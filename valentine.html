@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <link rel="stylesheet" href="valentine.css">
+</head>
+<body>
+    <!-- Floating stickers in background -->
+    <div class="floating-sticker sticker1">🦄</div>
+    <div class="floating-sticker sticker2">🐼</div>
+    <div class="floating-sticker sticker3">🦄</div>
+    <div class="floating-sticker sticker4">🐼</div>
+    <div class="floating-sticker sticker5">💕</div>
+    <div class="floating-sticker sticker6">✨</div>
+    <div class="floating-sticker sticker7">🌸</div>
+    <div class="floating-sticker sticker8">💖</div>
+
+    <!-- Main container -->
+    <div class="container">
+        <h1 class="title">Will You Be My Valentine? 💕</h1>
+        <div class="bubu-badge">Bubu</div>
+        <p class="subtitle">Choose wisely... 😊</p>
+        
+        <div class="button-container">
+            <button class="yes-btn" onclick="handleYes()">Yes! 💖</button>
+            <button class="no-btn" id="noBtn">No 🏃</button>
+        </div>
+    </div>
+
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">
+        <h1>Yay! 🎉</h1>
+        <p>You just made me the happiest! 💕</p>
+        <p style="font-size: 3rem; margin-top: 20px;">🦄💕🐼</p>
+        <div class="success-actions">
+            <button id="openTourBtn" class="view-all-btn" onclick="showDayByIndex(0)">Start Tour →</button>
+        </div>
+    </div>
+
+    <!-- Days selection -->
+    <div class="days-container" id="daysContainer">
+        <div class="days-title">Pick a day for our first date! 💕</div>
+        <div class="days-grid" id="daysGrid"></div>
+        <button class="back-btn" onclick="goBack()">← Go Back</button>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <script src="valentine.js"></script>
+</body>
+</html>
