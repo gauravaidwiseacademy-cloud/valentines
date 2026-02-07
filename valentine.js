@@ -40,7 +40,7 @@ document.addEventListener('mousemove', (e) => {
 // Valentine's week days
 const days = [
     { name: 'Rose Day', emoji: '🌹', date: new Date(2026, 1, 7), content: '🌹 Every rose symbolizes a thorn... no wait, it symbolizes love! 💕', decoration: '🌹💕🌹' },
-    { name: 'Propose Day', emoji: '💍', date: new Date(2026, 1, 8), content: '💍 Will you take this journey with me? 🥺💕', decoration: '💍✨💍' },
+    { name: 'Propose Day', emoji: '💍', date: new Date(2026, 1, 8), content: '💍 Will you take this journey with me mere Kullu? 🥺💕', decoration: '💍✨💍' },
     { name: 'Chocolate Day', emoji: '🍫', date: new Date(2026, 1, 9), content: '🍫 Sweet like you, melting in my heart... 🍫💕', decoration: '🍫💕🍫' },
     { name: 'Teddy Day', emoji: '🧸', date: new Date(2026, 1, 10), content: '🧸 Cuddles and bears, the recipe for happiness! 🧸💕', decoration: '🧸💕🧸' },
     { name: 'Promise Day', emoji: '🤝', date: new Date(2026, 1, 11), content: '🤝 I promise to always make you smile! 💕🌟', decoration: '🤝💕🤝' },
@@ -69,8 +69,8 @@ function createDayButtons() {
     
     days.forEach((day, i) => {
         const dayBtn = document.createElement('button');
-        // Always enable first day (Rose Day) immediately; others depend on date
-        const isEnabled = (i === 0) || isDateEnabled(day.date);
+        // Always enable first day (Rose Day) and Propose Day for testing; others depend on date
+        const isEnabled = (i === 0 || i === 1) || isDateEnabled(day.date);
         dayBtn.className = isEnabled ? 'day-btn' : 'day-btn disabled-btn';
         dayBtn.innerHTML = `<span>${day.emoji}</span><span>${day.name.split(' ')[0]}</span>`;
         
@@ -92,6 +92,15 @@ function selectDay(day) {
     if (idx >= 0) showDayByIndex(idx);
 }
 
+// Propose Day questions with voice recordings
+const proposeQuestions = [
+    { question: 'What you have done to me?', duration: '0:45' },
+    { question: 'How it feels to be in love with you?', duration: '0:52' },
+    { question: 'Why did you come into my life?', duration: '1:08' },
+    { question: 'What you are to me?', duration: '0:58' },
+    { question: 'What i dream - the proposal?', duration: '1:12' }
+];
+
 // current index used by navigation
 let currentDayIndex = 0;
 
@@ -99,6 +108,12 @@ let currentDayIndex = 0;
 function showDayByIndex(index) {
     currentDayIndex = ((index % days.length) + days.length) % days.length;
     const day = days[currentDayIndex];
+
+    // Special handling for Propose Day (index 1)
+    if (currentDayIndex === 1) {
+        showProposeDayModal();
+        return;
+    }
 
     // hide containers and show overlay
     document.getElementById('daysContainer').style.display = 'none';
@@ -140,6 +155,117 @@ function showDayByIndex(index) {
     // create heart animations
     for (let i = 0; i < 12; i++) {
         setTimeout(() => createHeartAnimation(), i * 80);
+    }
+}
+
+// Show Propose Day modal with questions and voice recordings
+function showProposeDayModal() {
+    const day = days[1]; // Propose Day
+
+    // hide containers and show overlay
+    document.getElementById('daysContainer').style.display = 'none';
+    successMessage.style.display = 'none';
+    overlay.style.display = 'block';
+
+    // remove existing if present
+    const existing = document.querySelector('.day-selected');
+    if (existing) existing.remove();
+
+    const daySelected = document.createElement('div');
+    daySelected.className = 'day-selected';
+
+    // Build questions HTML
+    let questionsHTML = `<div class="questions-container">`;
+    proposeQuestions.forEach((q, idx) => {
+        questionsHTML += `
+            <div class="question-item" data-question-index="${idx}">
+                <button class="play-button" onclick="playQuestionAudio(event, ${idx})">▶</button>
+                <div class="recording-clip">
+                    <div class="waveform">
+                        ${Array(8).fill(0).map(() => '<div class="wave-bar"></div>').join('')}
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                </div>
+                <div class="duration">${q.duration}</div>
+            </div>
+        `;
+    });
+    questionsHTML += `</div>`;
+
+    daySelected.innerHTML = `
+        <button class="day-back-btn" onclick="closeDayModal()">←</button>
+        <div class="content-scroll">
+            <h1>${day.emoji} ${day.name}</h1>
+            <p>${day.content}</p>
+            ${questionsHTML}
+            <p style="font-size: 2.5rem; margin-top: 28px;">${day.decoration}</p>
+        </div>
+    `;
+    
+    document.body.appendChild(daySelected);
+    daySelected.style.display = 'block';
+
+    // create heart animations
+    for (let i = 0; i < 12; i++) {
+        setTimeout(() => createHeartAnimation(), i * 80);
+    }
+}
+
+// Play question audio
+function playQuestionAudio(event, questionIndex) {
+    event.stopPropagation();
+    
+    const questionItem = document.querySelector(`[data-question-index="${questionIndex}"]`);
+    if (!questionItem) return;
+
+    // Stop any currently playing audio
+    const allQuestions = document.querySelectorAll('.question-item');
+    allQuestions.forEach(q => {
+        if (q !== questionItem) {
+            q.classList.remove('playing');
+            const playBtn = q.querySelector('.play-button');
+            if (playBtn) playBtn.textContent = '▶';
+            const audio = q.querySelector('audio');
+            if (audio) audio.pause();
+        }
+    });
+
+    // Toggle play state for current question
+    const playButton = questionItem.querySelector('.play-button');
+    const showAudio = questionItem.querySelector('audio');
+
+    if (questionItem.classList.contains('playing')) {
+        // Stop playing
+        questionItem.classList.remove('playing');
+        playButton.textContent = '▶';
+        if (showAudio) showAudio.pause();
+    } else {
+        // Start playing
+        questionItem.classList.add('playing');
+        playButton.textContent = '⏸';
+        
+        // Create audio element if it doesn't exist
+        if (!showAudio) {
+            const audio = document.createElement('audio');
+            audio.src = `assets/Audio_${questionIndex + 1}.mp4`;
+            audio.onended = () => {
+                questionItem.classList.remove('playing');
+                playButton.textContent = '▶';
+            };
+            questionItem.appendChild(audio);
+            audio.play().catch(() => {
+                // Audio file not found, show message
+                alert(`Question ${questionIndex + 1} audio not found. Please add assets/Audio_${questionIndex + 1}.mp4`);
+                questionItem.classList.remove('playing');
+                playButton.textContent = '▶';
+            });
+        } else {
+            showAudio.play().catch(() => {
+                alert(`Could not play audio for question ${questionIndex + 1}`);
+                questionItem.classList.remove('playing');
+                playButton.textContent = '▶';
+            });
+        }
     }
 }
 
